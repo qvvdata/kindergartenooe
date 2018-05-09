@@ -183,3 +183,7 @@ span.scalevalue {
   font-style: italic;
   font-size: 10px;
 }
+
+.leaflet-container path {
+  transition: fill .75s;
+}
