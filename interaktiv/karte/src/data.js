@@ -3,8 +3,8 @@ import * as d3scale from 'd3-scale';
 var cs = ['#381f41', '#664273','#a79cab','#41624b'];
 var ts = d3scale.scaleThreshold().domain([-25,-0.1,0.1]).range(['großer Rückgang','Rückgang','keine Veränderung','Zuwachs']);
 maps['kindergaerten'] = {
-  title: 'Wo sich Kinder abgemeldet haben',
-  description: 'In dieser Karte wird die prozentuelle Veränderung der Anzahl der Kindergartenkinder in Nachmittagsbetreuung zwischen Jänner und März 2018 dargestellt. Gemeinden, die keine Auskunft gegeben oder auf die unsere Fragen nicht zugetroffen haben werden gestreift dargestellt.',
+  title: 'Wo Eltern ihre Kinder abgemeldet haben',
+  description: 'In dieser Karte wird die prozentuelle Veränderung der Anzahl der Kindergartenkinder in Nachmittagsbetreuung zwischen Jänner und März/April 2018 dargestellt. Gemeinden, die keine Auskunft gegeben oder keine Nachmittagsbetreuung haben werden gestreift dargestellt.',
   detail: 'In einigen Gemeinden gibt es <span class="scalevalue">keine Betreuung/Kooperation</span> oder nur eine Betreuung durch <span class="scalevalue">Caritas oder andere private Erhalter</span>, manche haben <span class="scalevalue">keine Auskunft</span> gegeben.',
   data: 'gemeinden.csv',
   data_key: 'gkz',
@@ -50,7 +50,7 @@ maps['kindergaerten'] = {
     d = d[0];
     return `<strong>${d.name}</strong>`+
       (d.Kategorie=='Alles da'?`
-      <span style="padding-left: 0.5em; float: right; display: inline-block;">${d['Prozentuelle Änderung']>0?'+':''}${pctfmt(d['Prozentuelle Änderung'])} %</span>
+      <span style="padding-left: 0.5em; font-weight: bold; font-size: 1.25em; float: right; display: inline-block;">${d['Prozentuelle Änderung']>0?'+':''}${pctfmt(d['Prozentuelle Änderung'])} %</span>
 <br />
 Kindergartenkinder: ${numfmt(d['Kinder insgesamt'])}<br />
 Kinder am Nachmittag vor Gebühr: ${numfmt(d['Jänner: Kinder in Nachmittagsbetreuung'])}<br />
