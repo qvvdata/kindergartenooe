@@ -197,14 +197,21 @@ library(rgdal)
 needs(tidyverse, magrittr)
 gde_18 <- readOGR("input/geo/2018/gemeinden_w_bez.shp", layer = "gemeinden_w_bez")
 
-quantile(std$diffmin, na.rm = TRUE)
 
 
 map_data_fortified <- fortify(gde_18, region = "GKZ") %>% 
   mutate(id = as.numeric(id))
 
 map_data <- std %>% left_join(map_data_fortified, by = c("gkz" = "id")) 
-map_data$klasse <- cut(map_data$diffmin, c(-220,0,18,70,330),  labels = c("kürzer", "etwas länger", "länger","viel länger"))
+map_data$klasse <- cut(map_data$diffmin, c(-220,-75,-5, 5,18,70,330),  labels = c("viel kürzer", "kürzer", "gleich" ,"etwas länger", "länger","viel länger"))
+
+quantile(std$gemgew16, na.rm = TRUE, probs = seq(0, 1, 0.1))
+#  0%         10%         20%         30%         40%         50%         60%         70%         80%         90%        100% 
+# -216.571429  -36.000000   -9.150000    0.000000    1.853223   18.000000   36.000000   58.620360   85.300961  141.000000  326.400000 
+
+map_data$diffminmap <- map_data$gemgew16
+map_data$diffminmap[map_data$gemgew16 >= 600] <- 600
+map_data$diffminmap[map_data$gemgew16 <= 360] <- 360
 
 #VISUALISIERUNG ZEICHNEN
 p7 <- ggplot() +
@@ -212,7 +219,7 @@ p7 <- ggplot() +
     geom_polygon(data = map_data, aes(x = long, 
                                       y = lat, 
                                       group = group, 
-                                      fill=diffmin)) +
+                                      fill=diffminmap)) +
     # municipality outline
     geom_path(data = map_data, aes(x = long, 
                                    y = lat, 
@@ -220,11 +227,13 @@ p7 <- ggplot() +
               color = "white", size = 0.001) +
     coord_equal() +
     coord_map(projection = "mercator")+
-    #scale_fill_manual(values=c("viel länger" = "#441F21",
-#"länger" = "#775C5D",
-#"etwas länger" = "#AA999A",
-#"kürzer" = "#ffa630"))+
-  scale_fill_gradient2(low = "#84a07c", midpoint = 0, mid = "#f0edf1", high = "#ba2b58")+
+# scale_fill_manual(values=c("viel länger" = "#36513E",
+#                           "länger" = "#52705B",
+#                            "etwas länger" = "#869B8C",
+#                           "gleich" = "#A8A8A8",
+#                             "kürzer" = "#A89BAD", 
+#                               "viel kürzer" = "#40234b"))+
+  scale_fill_gradient2(low = "#ba2b58", midpoint = 500, mid = "#f0edf1", high = "#84a07c")+
     labs(x = NULL, 
          y = NULL, 
          title = "Kinderbetreuungszeitenvergleich", 
@@ -244,7 +253,7 @@ p7 <- ggplot() +
       panel.grid.major=element_blank(),
       panel.grid.minor=element_blank(),
       plot.background=element_blank())+
-  guides(fill=guide_legend(nrow=3,byrow=TRUE))
+  guides(fill=guide_legend(nrow=6,byrow=TRUE))
 plot(p7)
 ggsave("p7.pdf", width = 15, height = 60, units = "cm")
 

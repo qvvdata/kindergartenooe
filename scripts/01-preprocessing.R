@@ -185,8 +185,8 @@ std <- gemeinden %>%
   
 
 # Testing
-ggplot(std, aes(x = difftage)) +
-  geom_histogram(binwidth = 1) +
+ggplot(std, aes(x = diffmin)) +
+  geom_histogram(binwidth = 10) +
   theme_minimal() +
   scale_x_continuous(limits = c(0,3000),
                      labels = comma) +
