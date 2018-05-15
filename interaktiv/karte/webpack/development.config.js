@@ -3,6 +3,7 @@ const merge = require('webpack-merge');
 const path = require('path');
 const webpack = require('webpack');
 
+/*
 const developmentConfig = {
   devServer: {
     stats: 'errors-only',
@@ -17,5 +18,5 @@ const developmentConfig = {
     new webpack.NoErrorsPlugin()
   ]
 };
-
-module.exports = merge(base, developmentConfig);
+*/
+module.exports = base;
