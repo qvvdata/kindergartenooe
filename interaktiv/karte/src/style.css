@@ -185,5 +185,5 @@ span.scalevalue {
 }
 
 .leaflet-container path {
-  transition: fill .75s;
+  transition: fill 5s;
 }

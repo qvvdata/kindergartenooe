@@ -1,7 +1,154 @@
 <html>
   <head>
+    <script src="https://data.addendum.org/gfx/oligrapher/pym.v1.min.js" class="script_pymembed"></script>
+<style>
+body {
+  background: #f6f4f3;
+  padding: 0;
+    margin: 0;
+}
+.qvv_scrollytell_wien .sections{
+  width: 50%;
+}
+.qvv_scrollytell_wien .sections > div {
+  max-width: 400px;
+}
+</style>
   </head>
   <body>
-    <div id="example"></div>
+    <h2>Etwas darüber</h2>
+    <p>Lorem Ipsum
+    Lorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsLorem Ipsumummmmmmmmmmmmm
+    Lorem IpsumLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem Ipsummmmmmmmmm
+    Lorem IpsumLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem IpsuLorem Ipsummmmmmmmmmmmmmm
+    Lorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem Ipsum
+    Lorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem Ipsum
+    Lorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem Ipsum
+    </p>
+    <div class="qvv_scrollytell_wien" data-steps="segregation">
+      <div class="container">
+        <div class="graphcontainer">
+          <div class="graph"></div>
+        </div>
+        <div class="sections"></div>
+      </div>
+    </div>
+    <h2>Zwischendings</h2>
+    <div class="qvv_scrollytell_wien" data-steps="bildung">
+      <div class="container">
+        <div class="graphcontainer">
+          <div class="graph"></div>
+        </div>
+        <div class="sections"></div>
+      </div>
+    </div>
+    <h2>Zwischendings</h2>
+    <div class="qvv_scrollytell_wien" data-steps="nationalitaet">
+      <div class="container">
+        <div class="graphcontainer">
+          <div class="graph"></div>
+        </div>
+        <div class="sections"></div>
+      </div>
+    </div>
+    <!-- <style>@import url('leaflet.css');</style> -->
+    <style>
+.qvv_scrollytell_wien .container{
+  position: relative;
+  margin-bottom: 60vh;
+  border-bottom: 120px solid transparent;
+}
+.qvv_scrollytell_wien {
+  padding-bottom: 120px;
+  margin-top: -120px;
+}
+
+.qvv_scrollytell_wien .sections{
+  min-width: 250px;
+  border-top: 120px solid transparent;
+}
+
+.qvv_scrollytell_wien .sections > div {
+  padding-top: 10vh;
+  padding-bottom: 55vh;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0.25;
+  background: rgba(255,255,255,0)
+}
+
+.qvv_scrollytell_wien .sections > div:last-child {
+  padding-bottom: 0;
+}
+
+.qvv_scrollytell_wien .sections > div.graph-scroll-active {
+  opacity: 1;
+  transition: opacity background 1s;
+}
+
+.qvv_scrollytell_wien .sections {
+  position: relative;
+  padding-top: 65vh;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.qvv_scrollytell_wien .graphcontainer{
+  position: absolute;
+  width: 100%;
+  top: 0;
+  z-index: -1;
+}
+
+.qvv_scrollytell_wien .graph-scroll-fixed .graphcontainer {
+  position: fixed;
+}
+.qvv_scrollytell_wien .graph-scroll-below .graphcontainer {
+  position: absolute;
+  bottom: 0;
+  top: auto;
+  margin-bottom: -120px;
+}
+
+.qvv_scrollytell_wien .graphcontainer img {
+  max-width: 100%;
+  max-height: 100%;
+}
+.qvv_scrollytell_wien .graphcontainer .imgcontainer {
+  width: 100%;
+  height: 65vh;
+  position: absolute;
+  text-align: center;
+  top: 120px;
+}
+
+.qvv_scrollytell_wien .graphcontainer .graph {
+  position: absolute;
+  top: 0;
+}
+.qvv_scrollytell_wien .textwrapper {
+  background: rgba(255,255,255,0.7);
+  padding: 3px 10px ;
+}
+
+@media screen and (max-width: 520px) , screen and (max-height:600px)  {
+  .qvv_scrollytell_wien .sections{
+    position: relative;
+    padding-top: 40vh;
+  }
+  .qvv_scrollytell_wien .sections > div {
+    padding-top: 10vh;
+    padding-bottom: 35vh;
+  }
+  .qvv_scrollytell_wien .graphcontainer .imgcontainer, .graphcontainer .graph {
+    height: 40vh;
+  }
+  .qvv_scrollytell_wien .container {
+    margin-bottom: 40vh;
+  }
+}
+    </style>
+    <script src='commons.js'></script>
+    <script src="scripttag.js"></script>
   </body>
 </html>

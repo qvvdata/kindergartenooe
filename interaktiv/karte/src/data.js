@@ -1,6 +1,7 @@
 var maps = {};
 import * as d3scale from 'd3-scale';
 var cs = ['#381f41', '#664273','#a79cab','#41624b'];
+var cs2 = ['yellow', 'orange','red','green'];
 var ts = d3scale.scaleThreshold().domain([-25,-0.1,0.1]).range(['großer Rückgang','Rückgang','keine Veränderung','Zuwachs']);
 maps['kindergaerten'] = {
   title: 'Wo Eltern ihre Kinder abgemeldet haben',
@@ -14,6 +15,7 @@ maps['kindergaerten'] = {
   search_keys: ['PG'],
   search_title: 'Gemeindesuche',
   topojson: 'gemeinden.topojson',
+  bundesland: 4,
   value: function(d) {
     if(d.length==0) {
       return null;
@@ -36,7 +38,7 @@ maps['kindergaerten'] = {
   thresholds: {colors: cs, thresholds: ts.domain(), labels: ts.range()},
 
   categories: [['großer Rückgang', 'Rückgang', 'keine Veränderung', 'Zuwachs'],
-    ['keine Betreuung/Kooperation', 'Caritas oder anderer privater Erhalter', 'keine Auskunft']],
+    ['keine Betreuung/Kooperation', 'Caritas oder andere private Erhalter', 'keine Auskunft']],
   /*baselayer: () => L.tileLayer('https://{s}.wien.gv.at/basemap/bmaporthofoto30cm/normal/google3857/{z}/{y}/{x}.jpeg', {
       subdomains: ["maps", "maps1", "maps2", "maps3"],
       attribution: 'cc-by 3.0 basemap.at',
@@ -63,6 +65,56 @@ Veränderung: ${d.Differenz>0?'+':''}${numfmt(d['Differenz'])}
           Rückmeldung über <a target="_blank" href="https://form.jotformeu.com/81265006658357">dieses Formular</a> mit.
 `:`<br />${d.Kategorie}`))+ `
     ${d['Karte-Text']?'<br /><span class="kartetext">'+d['Karte-Text']+'</span>':''}`;
+  }
+};
+maps['kindergaerten2'] = {
+  title: 'Test',
+  description: 'test',
+  detail: 'test',
+  data: 'gemeinden.csv',
+  data_key: 'gkz',
+  property_key: 'GKZ',
+  source: 'Eigenrecherche',
+  is_gemeinden: false,
+  search_keys: ['PG'],
+  search_title: 'Gemeindesuche',
+  topojson: 'gemeinden.topojson',
+  value: function(d) {
+    if(d.length==0) {
+      return null;
+    }
+    d = d[0];
+    if(d.Kategorie=='Alles da') {
+      return [0,ts(d['Prozentuelle Änderung'])];
+    }
+    return [1,d.Kategorie];
+  },
+
+  scale: 'threshold-or-category',
+
+  search: true,
+  colorschemes: [
+    cs2,
+    ['#888888','#000000', '#820B0B']
+  ],
+  legend: 0,
+  thresholds: {colors: cs2, thresholds: ts.domain(), labels: ts.range()},
+  bundesland: 4,
+
+  categories: [['großer Rückgang', 'Rückgang', 'keine Veränderung', 'Zuwachs'],
+    ['keine Betreuung/Kooperation', 'Caritas oder andere private Erhalter', 'keine Auskunft']],
+  /*baselayer: () => L.tileLayer('https://{s}.wien.gv.at/basemap/bmaporthofoto30cm/normal/google3857/{z}/{y}/{x}.jpeg', {
+      subdomains: ["maps", "maps1", "maps2", "maps3"],
+      attribution: 'cc-by 3.0 basemap.at',
+      detectRetina: true
+  }) ,*/
+
+  tooltip: function(d, p, pctfmt, numfmt) {
+    if(d.length==0) {
+      return p.PG;
+    }
+    d = d[0];
+    return `<strong>${d.name}</strong>2`;
   }
 };
 

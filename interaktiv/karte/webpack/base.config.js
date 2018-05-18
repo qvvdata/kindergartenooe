@@ -4,18 +4,23 @@ var webpack = require('webpack');
 module.exports = {
   entry: {
     application: path.resolve(__dirname, '../src/application.js'), // arguments can be seen as being passed to `cd` and chained from left to right; see https://nodejs.org/api/path.html#path_path_resolve_from_to
-    scripttag: path.resolve(__dirname, '../src/script.js')
+    scripttag: path.resolve(__dirname, '../src/script.js'),
+    html: path.resolve(__dirname, '../src/html.js')
   },
   mode: 'development',
   module: {
     rules: [
+      {
+        test: /\.archieml/,
+        use: {loader: '@newsdev/archieml-loader'}
+      },
       {
         test: /\.js$/,
         use: {loader: 'babel-loader',
           options:
           {
             cacheDirectory: true,
-            presets: ['@babel/env']
+            presets: ['@babel/env'],
           }
         }
       },
