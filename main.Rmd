@@ -178,6 +178,32 @@ In welchen Gemeinden gibt es im Vergleich zu 2006 erstmals eine Betreuungseinric
 
 Ist frühkindliche Betreuung ausgebaut worden? Wenn ja, wo? Wie hat sich Betreuungsquote verändert?
 
+Bei altersgemischten Einrichtungen werden die GEwichte für 3 bis 6-Jährige miteinbezogen, nicht für alle anderen Altersgruppen. 26209 Kinder im betreffenden Alter sind in einer altersgemischten Einrichtung. Kindergartenkinder zählt die Kindertagesheimstatistik 221.490. 
+
+```{r}
+# print(length(which(std$diffmin <0)))
+# print(length(which(std$diffmin ==0)))
+# print(length(which(std$diffmin >0)))
+# 
+# print(length(which(std$diffmin >0 && std$typgmd==1)))
+# print(length(which(std$diffmin ==0 && std$typgmd==1)))
+# print(length(which(std$diffmin <0 && std$typgmd==1)))
+
+countup<- std %>%
+        #filter(diffmin<0) %>% 
+        group_by(typgmdtxt, diffmintxt) %>% 
+        count() %>%
+                summarise(sum = sum(n))
+cat(getwd())
+write.csv(countup, file ="output/datawrapper/laengerkurzer.csv")
+
+
+  
+  
+        summarise(sum2= length(diffmin[diffmin<0]), sum4 = sum(length[diffmin >0]), na.rm=TRUE)
+
+```
+
 
 ```{r}
 #Visualisierungen
@@ -205,13 +231,13 @@ map_data_fortified <- fortify(gde_18, region = "GKZ") %>%
 map_data <- std %>% left_join(map_data_fortified, by = c("gkz" = "id")) 
 map_data$klasse <- cut(map_data$diffmin, c(-220,-75,-5, 5,18,70,330),  labels = c("viel kürzer", "kürzer", "gleich" ,"etwas länger", "länger","viel länger"))
 
-quantile(std$gemgew16, na.rm = TRUE, probs = seq(0, 1, 0.1))
+quantile(std$diffmin, na.rm = TRUE, probs = seq(0, 1, 0.1))
 #  0%         10%         20%         30%         40%         50%         60%         70%         80%         90%        100% 
 # -216.571429  -36.000000   -9.150000    0.000000    1.853223   18.000000   36.000000   58.620360   85.300961  141.000000  326.400000 
 
-map_data$diffminmap <- map_data$gemgew16
-map_data$diffminmap[map_data$gemgew16 >= 600] <- 600
-map_data$diffminmap[map_data$gemgew16 <= 360] <- 360
+map_data$diffminmap <- map_data$diffmin
+map_data$diffminmap[map_data$diffmin >= -9] <- -9
+map_data$diffminmap[map_data$diffmin <= 85] <- 85
 
 #VISUALISIERUNG ZEICHNEN
 p7 <- ggplot() +
@@ -233,7 +259,7 @@ p7 <- ggplot() +
 #                           "gleich" = "#A8A8A8",
 #                             "kürzer" = "#A89BAD", 
 #                               "viel kürzer" = "#40234b"))+
-  scale_fill_gradient2(low = "#ba2b58", midpoint = 500, mid = "#f0edf1", high = "#84a07c")+
+  scale_fill_gradient2(low = "#ba2b58", midpoint = 18, mid = "#f0edf1", high = "#84a07c")+
     labs(x = NULL, 
          y = NULL, 
          title = "Kinderbetreuungszeitenvergleich", 
@@ -259,6 +285,8 @@ ggsave("p7.pdf", width = 15, height = 60, units = "cm")
 
 #source("https://data.addendum.org/gfx/fonts/theme_addendum.R", font_import())
 ```
+
+
 
 ## Linting
 

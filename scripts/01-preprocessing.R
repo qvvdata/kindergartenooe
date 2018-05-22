@@ -20,6 +20,11 @@ urbanrural <- read_excel("input/urbanruralgemeinden.xlsx", sheet="GEMEINDELISTE"
 
 gemeinden <- gemeinden %>% left_join(select(urbanrural, GKZ, UR_TYP), by = c ("gkz"="GKZ"))
 
+#Erwerbsstatus reinladen 2015
+erwerb <- read_excel("input/erwers.xlsx") %>%
+  numerize(c("gemeinde"))%>%
+  select(-gemeinde)
+
 
 # Kindertagesheimstatistik, Einrichtungen und Kinder 2016/17 nach der Anzahl der geöffneten Stunden pro Betriebstag laden
 offenestd16 <- read_excel("input/QVV KTH-Detaildaten 2016 nach GEMNR.xlsx", sheet="offene Stunden") 
@@ -115,11 +120,15 @@ gemeinden <- gemeinden %>%
              select(-c(status, plz, weiterePlz))
 
 #Gewichtung der Öffnungsstunden
+
+
+
 gemstd16 <- offenestd16 %>%
           filter(geführteFormNr == "2" | geführteFormNr == "4") %>%
-          mutate(gewichteteminuten = durchschngeöffenteMinutenproBetriebstag*AnzahlderbetreutenKinder) %>%
+          mutate(AnzahlderbetreutenKinder_3_6 = Alter3+Alter4+Alter5,
+                   gewichteteminuten = durchschngeöffenteMinutenproBetriebstag*AnzahlderbetreutenKinder_3_6) %>%
           group_by(gkz_neu) %>%
-          summarize(summegewkind = sum(AnzahlderbetreutenKinder), 
+          summarize(summegewkind = sum(AnzahlderbetreutenKinder_3_6), 
                     gewichteteminuten =sum(gewichteteminuten)
                  ) %>%
           mutate(gemgew = gewichteteminuten/summegewkind) %>%
@@ -127,20 +136,21 @@ gemstd16 <- offenestd16 %>%
 
 gemstd06 <- offenestd06 %>%
   filter(geführteFormNr == "2" | geführteFormNr == "4") %>%
-  mutate(gewichteteminuten = durchschngeöffenteMinutenproBetriebstag*AnzahlderbetreutenKinder) %>%
+  mutate(AnzahlderbetreutenKinder_3_6 = Alter3+Alter4+Alter5,
+         gewichteteminuten = durchschngeöffenteMinutenproBetriebstag*AnzahlderbetreutenKinder_3_6) %>%
   group_by(gkz_neu) %>%
-  summarize(summegewkind = sum(AnzahlderbetreutenKinder), 
-            gewichteteminuten =sum(gewichteteminuten)
-  ) %>%
+  summarize(summegewkind = sum(AnzahlderbetreutenKinder_3_6), 
+            gewichteteminuten =sum(gewichteteminuten)) %>%
   mutate(gemgew = gewichteteminuten/summegewkind)%>%
   filter(gkz_neu!="0")
 
 #Gewichtung der geschlossenen Tage 2006
 gemzu06 <- geschlossen06 %>%
   filter(geführteFormNr == "2" | geführteFormNr == "4") %>%
-  mutate(gewichtetetage = SchließtageproJahr*AnzahlderbetreutenKinder) %>%
+  mutate(AnzahlderbetreutenKinder_3_6 = Alter3+Alter4+Alter5,
+         gewichtetetage = SchließtageproJahr*AnzahlderbetreutenKinder_3_6) %>%
   group_by(gkz_neu) %>%
-  summarize(summegewkind = sum(AnzahlderbetreutenKinder), 
+  summarize(summegewkind = sum(AnzahlderbetreutenKinder_3_6), 
             gewichtetetage =sum(gewichtetetage)
   ) %>%
   mutate(gemgewtag = gewichtetetage/summegewkind)%>%
@@ -149,9 +159,10 @@ gemzu06 <- geschlossen06 %>%
 #Gewichtung der geschlossenen Tage 2016
 gemzu16 <- geschlossen16 %>%
   filter(geführteFormNr == "2" | geführteFormNr == "4") %>%
-  mutate(gewichtetetage = SchließtageproJahr*AnzahlderbetreutenKinder) %>%
+  mutate(AnzahlderbetreutenKinder_3_6 = Alter3+Alter4+Alter5,
+         gewichtetetage = SchließtageproJahr*AnzahlderbetreutenKinder_3_6) %>%
   group_by(gkz_neu) %>%
-  summarize(summegewkind = sum(AnzahlderbetreutenKinder), 
+  summarize(summegewkind = sum(AnzahlderbetreutenKinder_3_6), 
             gewichtetetage =sum(gewichtetetage)
   ) %>%
   mutate(gemgewtag = gewichtetetage/summegewkind)%>%
@@ -171,6 +182,7 @@ std <- gemeinden %>%
   select(-c(gewichteteminuten)) %>%
   left_join(gemstd06, by = c("gkz"="gkz_neu")) %>%
   rename(gemgew06 = gemgew, summegewkind06 = summegewkind) %>%
+  replace_na(list(gemgew06=0, gemgew16=0))%>%
   mutate(diff = gemgew16-gemgew06)%>%
   select(-gewichteteminuten)%>%
   left_join(gemzu06, by = c("gkz"="gkz_neu")) %>%
@@ -180,17 +192,34 @@ std <- gemeinden %>%
   rename(gemgewtag16 = gemgewtag, diffmin=diff)%>%
   select(-gewichtetetage)%>%
   mutate(difftage = gemgewtag16-gemgewtag06,
-         gkz = as.numeric(gkz))%>%
+         gkz = as.numeric(gkz), 
+         typgmd = substr(UR_TYP, 1,1))%>%
   drop_na(gkz)
-  
+
+
+std$typgmdtxt[std$typgmd == 1] <- "städtisch"
+std$typgmdtxt[std$typgmd > 1]  <- "ländlich"
+
+std$diffmintxt[std$diffmin == 0] <- "gleich"
+std$diffmintxt[std$diffmin > 0]  <- "länger"
+std$diffmintxt[std$diffmin < 0] <- "kürzer"
 
 # Testing
-ggplot(std, aes(x = diffmin)) +
-  geom_histogram(binwidth = 10) +
-  theme_minimal() +
-  scale_x_continuous(limits = c(0,3000),
-                     labels = comma) +
-  scale_y_continuous(labels = comma)
+# ggplot(std, aes(x = diffmin)) +
+#   geom_dotplot(binwidth = 1, color) +
+#   #scale_y_continuous(NULL, breaks = NULL)+
+#   theme_minimal() +
+#   scale_x_continuous(limits = c(-240,330.00), 
+#                      breaks = c(-60,0,60))
+#scale_y_continuous(limits = c(0,500))
+
+#Erwerbsdaten dazumergen
+source("scripts/BorderMan.R")
+erwerb <- remove_teilungen(borderman(erwerb))
+
+erwerbsdaten <- erwerb%>%
+  mutate(vzquote = `2015_frauen_erwerbstätig_vz`/(`2015_frauen_erwerbstätig_vz`+`2015_frauen_erwerbstätig_tz`*100), 
+         erwerbstätigenquote = )
 
 
 # Alle überflüssigen DFs entfernen
