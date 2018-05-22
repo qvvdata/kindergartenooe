@@ -1,0 +1,301 @@
+---
+title: "Betreuungsangebot für Kinder von 0-6"
+subtitle: "Vergleich 2006/07-2016/17"
+author: "Gerald Gartner"
+date: "05-2015"
+output:
+  html_document:
+    code_folding: show
+    toc: yes
+    toc_float: 
+      collapsed: false
+      smooth_scroll: false
+---
+
+
+```{r, echo=FALSE}
+# CONFIG
+user_name <- "qvvdata" # your Git username (only needed if
+# you want to deploy to GH pages)
+project_name <- "kigaooe" # adapt!
+package_date <- "2018-02-05" # date of the CRAN snapshot that
+# the checkpoint package uses
+```
+
+## Notes
+
+This report was generated on `r Sys.time()`.
+
+...
+
+### R-Script & data
+
+The preprocessing and analysis of the data was conducted in the [R project for statistical computing](https://www.r-project.org/). The RMarkdown script used to generate this document and all the resulting data can be downloaded [under this link](http://`r user_name`.github.io/`r project_name`/rscript.zip). Through executing `main.Rmd`, the herein described process can be reproduced and this document can be generated. In the course of this, data from the folder `ìnput` will be processed and results will be written to `output`. 
+
+### GitHub
+
+The code for the herein described process can also be freely downloaded from [https://github.com/`r user_name`/`r project_name`](https://github.com/`r user_name`/`r project_name`). 
+
+
+### License
+
+...
+
+### `xyz.csv` 
+
+...
+
+## Preparations
+
+```{r, echo=FALSE}
+detach_all_packages <- function() {
+  basic_packages_blank <-  c("stats",
+                             "graphics",
+                             "grDevices",
+                             "utils",
+                             "datasets",
+                             "methods",
+                             "base")
+  basic_packages <- paste("package:", basic_packages_blank, sep = "")
+
+  package_list <- search()[
+    ifelse(unlist(gregexpr("package:", search())) == 1, TRUE, FALSE)]
+
+  package_list <- setdiff(package_list, basic_packages)
+
+  if (length(package_list) > 0)  for (package in package_list) {
+    detach(package, character.only = TRUE, unload = TRUE)
+    print(paste("package ", package, " detached", sep = ""))
+  }
+}
+
+detach_all_packages()
+
+# this allows multiple persons to use the same RMarkdown
+# without adjusting the working directory by themselves all the time
+source("scripts/csf.R")
+path_to_wd <- csf() # if this - for some reason - does not work, 
+# replace with a hardcoded path, like so: "~/projects/rddj-template/analysis/"
+if ( is.null(path_to_wd) | !dir.exists(path_to_wd)) {
+  print("WARNING: No working directory specified for current user")
+} else {
+  setwd(path_to_wd)
+}
+```
+
+
+### Define packages
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+# from https://mran.revolutionanalytics.com/web/packages/checkpoint/vignettes/using-checkpoint-with-knitr.html
+# if you don't need a package, remove it from here (commenting is probably not sufficient)
+# tidyverse: see https://blog.rstudio.org/2016/09/15/tidyverse-1-0-0/
+cat("
+library(tidyverse) # ggplot2, dplyr, tidyr, readr, purrr, tibble
+library(magrittr) # pipes
+library(stringr) # string manipulation
+library(readxl) # excel
+library(scales) # scales for ggplot2
+library(jsonlite) # json
+library(forcats) # easier factor handling,
+library(lintr) # code linting
+library(xlsx) #Excel
+library(googlesheets) # googlesheets (replace with googlesheets4 asap)",
+file = "manifest.R")
+```
+
+### Install packages
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+# if checkpoint is not yet installed, install it (for people using this
+# system for the first time)
+if (!require(checkpoint)) {
+  if (!require(devtools)) {
+    install.packages("devtools", repos = "http://cran.us.r-project.org")
+    require(devtools)
+  }
+  devtools::install_github("checkpoint",
+                           username = "RevolutionAnalytics",
+                           ref = "v0.3.2", # could be adapted later,
+                           # as of now (beginning of July 2017
+                           # this is the current release on CRAN)
+                           repos = "http://cran.us.r-project.org")
+  require(checkpoint)
+}
+# nolint start
+if (!dir.exists("~/.checkpoint")) {
+  dir.create("~/.checkpoint")
+}
+# nolint end
+# install packages for the specified CRAN snapshot date
+checkpoint(snapshotDate = package_date,
+           project = path_to_wd,
+           verbose = T,
+           scanForPackages = T,
+           use.knitr = F)
+rm(package_date)
+```
+
+
+### Load packages
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+source("manifest.R")
+unlink("manifest.R")
+sessionInfo()
+```
+
+### Load additional scripts
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+# if you want to outsource logic to other script files, see README for 
+# further information
+knitr::read_chunk("scripts/theme_addendum.R")
+source("./scripts/theme_addendum.R")
+source("./scripts/BorderMan.R")
+source("./scripts/01-preprocessing.R")
+cat(getwd())
+#my_function(5)
+
+```
+
+
+
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+options(scipen=999)
+
+#Analyse
+
+```
+
+Wo hat sich Öffnungszeit positiv/negativ entwickelt?
+Welche Stadt/Land-Unterschiede bzw. nach Bundesländern gibt es?
+Wie haben sich Schließtage entwickelt? Welche Stadt/Land-Unterschiede gibt es?
+
+Auf welche Erhalter geht der Ausbau zurück? Sind private/öffenltiche dafür verantwortlich?
+In welchen Gemeinden gibt es im Vergleich zu 2006 erstmals eine Betreuungseinrichtung?
+
+Ist frühkindliche Betreuung ausgebaut worden? Wenn ja, wo? Wie hat sich Betreuungsquote verändert?
+
+Bei altersgemischten Einrichtungen werden die GEwichte für 3 bis 6-Jährige miteinbezogen, nicht für alle anderen Altersgruppen. 26209 Kinder im betreffenden Alter sind in einer altersgemischten Einrichtung. Kindergartenkinder zählt die Kindertagesheimstatistik 221.490. 
+
+```{r}
+# print(length(which(std$diffmin <0)))
+# print(length(which(std$diffmin ==0)))
+# print(length(which(std$diffmin >0)))
+# 
+# print(length(which(std$diffmin >0 && std$typgmd==1)))
+# print(length(which(std$diffmin ==0 && std$typgmd==1)))
+# print(length(which(std$diffmin <0 && std$typgmd==1)))
+
+countup<- std %>%
+        #filter(diffmin<0) %>% 
+        group_by(typgmdtxt, diffmintxt) %>% 
+        count() %>%
+                summarise(sum = sum(n))
+cat(getwd())
+write.csv(countup, file ="output/datawrapper/laengerkurzer.csv")
+
+
+  
+  
+        summarise(sum2= length(diffmin[diffmin<0]), sum4 = sum(length[diffmin >0]), na.rm=TRUE)
+
+```
+
+
+```{r}
+#Visualisierungen
+
+  # labs(title = "Schlagzeile", 
+  #      x = "Vertikale Achse", 
+  #      y = "horizontale Achse",
+  #      #subtitle ="Funktioniert aus unerklärlichen Gründen noch nicht", 
+  #      caption = "Quelle")+
+  # theme_addendum()
+
+#Exportieren für Illustrator funktioniert nicht über ggsave (Schriften), sondern besser über Export des Plot-Viewers#
+
+# 
+#needs(magrittr, maptools, Cairo, ggmap, maps, rgdal, raster, viridis, readxl, googlesheets, gridExtra)
+library(rgdal)
+needs(tidyverse, magrittr)
+gde_18 <- readOGR("input/geo/2018/gemeinden_w_bez.shp", layer = "gemeinden_w_bez")
+
+
+
+map_data_fortified <- fortify(gde_18, region = "GKZ") %>% 
+  mutate(id = as.numeric(id))
+
+map_data <- std %>% left_join(map_data_fortified, by = c("gkz" = "id")) 
+map_data$klasse <- cut(map_data$diffmin, c(-220,-75,-5, 5,18,70,330),  labels = c("viel kürzer", "kürzer", "gleich" ,"etwas länger", "länger","viel länger"))
+
+quantile(std$diffmin, na.rm = TRUE, probs = seq(0, 1, 0.1))
+#  0%         10%         20%         30%         40%         50%         60%         70%         80%         90%        100% 
+# -216.571429  -36.000000   -9.150000    0.000000    1.853223   18.000000   36.000000   58.620360   85.300961  141.000000  326.400000 
+
+map_data$diffminmap <- map_data$diffmin
+map_data$diffminmap[map_data$diffmin >= -9] <- -9
+map_data$diffminmap[map_data$diffmin <= 85] <- 85
+
+#VISUALISIERUNG ZEICHNEN
+p7 <- ggplot() +
+    # municipality polygons
+    geom_polygon(data = map_data, aes(x = long, 
+                                      y = lat, 
+                                      group = group, 
+                                      fill=diffminmap)) +
+    # municipality outline
+    geom_path(data = map_data, aes(x = long, 
+                                   y = lat, 
+                                   group = group), 
+              color = "white", size = 0.001) +
+    coord_equal() +
+    coord_map(projection = "mercator")+
+# scale_fill_manual(values=c("viel länger" = "#36513E",
+#                           "länger" = "#52705B",
+#                            "etwas länger" = "#869B8C",
+#                           "gleich" = "#A8A8A8",
+#                             "kürzer" = "#A89BAD", 
+#                               "viel kürzer" = "#40234b"))+
+  scale_fill_gradient2(low = "#ba2b58", midpoint = 18, mid = "#f0edf1", high = "#84a07c")+
+    labs(x = NULL, 
+         y = NULL, 
+         title = "Kinderbetreuungszeitenvergleich", 
+         #subtitle = "Vergleich der Erwerbsquoten je Geschlecht", 
+         caption = "Quelle: Statistik Austria, BEV.")+
+   theme(legend.position="top",
+      legend.text = element_text(size=8),
+      axis.line=element_blank(),
+      strip.background = element_blank(),
+      axis.text.x=element_blank(),
+      axis.text.y=element_blank(),
+      axis.ticks=element_blank(),
+      axis.title.x=element_blank(),
+      axis.title.y=element_blank(),
+      panel.background=element_blank(),
+      panel.border=element_blank(),
+      panel.grid.major=element_blank(),
+      panel.grid.minor=element_blank(),
+      plot.background=element_blank())+
+  guides(fill=guide_legend(nrow=6,byrow=TRUE))
+plot(p7)
+ggsave("p7.pdf", width = 15, height = 60, units = "cm")
+
+#source("https://data.addendum.org/gfx/fonts/theme_addendum.R", font_import())
+```
+
+
+
+## Linting
+
+The code in this RMarkdown is listed with the [lintr package](https://github.com/jimhester/lintr), which is based on the  [tidyverse style guide](http://style.tidyverse.org/). 
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+lintr::lint("main.Rmd")
+# if you have additional scripts and want them to be linted too, add them here
+#lintr::lint("scripts/my_script.R")
+```
+
+
