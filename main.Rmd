@@ -154,6 +154,7 @@ knitr::read_chunk("scripts/theme_addendum.R")
 source("./scripts/theme_addendum.R")
 source("./scripts/BorderMan.R")
 source("./scripts/01-preprocessing.R")
+source('./scripts/geom_holygon.R')
 cat(getwd())
 #my_function(5)
 
@@ -244,8 +245,14 @@ write.csv(countup, file ="output/datawrapper/laengerkurzer.csv")
 # 
 #needs(magrittr, maptools, Cairo, ggmap, maps, rgdal, raster, viridis, readxl, googlesheets, gridExtra)
 library(rgdal)
+library(rgeos)
 needs(tidyverse, magrittr)
-gde_18 <- readOGR("input/geo/2018/gemeinden_w_bez.shp", layer = "gemeinden_w_bez")
+gde_18 <- readOGR("input/geo/2018/gemeinden m bezirke 2018.geojson","OGRGeoJSON")
+
+gde_18@data$BL = substring(gde_18@data$GKZ,0,1)
+
+#region <- spChFIDs(region, row.names(region))
+bundeslaendergrenzen <- gUnaryUnion(gde_18, id = gde_18@data$BL)
 
 
 
@@ -260,8 +267,8 @@ quantile(std$diffmin, na.rm = TRUE, probs = seq(0, 1, 0.1))
 # -216.571429  -36.000000   -9.150000    0.000000    1.853223   18.000000   36.000000   58.620360   85.300961  141.000000  326.400000 
 
 map_data$diffminmap <- map_data$diffmin
-map_data$diffminmap[map_data$diffmin >= -9] <- -9
-map_data$diffminmap[map_data$diffmin <= 85] <- 85
+map_data$diffminmap[map_data$diffmin <= -6] <- -6
+map_data$diffminmap[map_data$diffmin >= 85] <- 85
 
 #VISUALISIERUNG ZEICHNEN
 p7 <- ggplot() +
@@ -275,34 +282,17 @@ p7 <- ggplot() +
                                    y = lat, 
                                    group = group), 
               color = "white", size = 0.001) +
-    coord_equal() +
-    coord_map(projection = "mercator")+
-# scale_fill_manual(values=c("viel länger" = "#36513E",
-#                           "länger" = "#52705B",
-#                            "etwas länger" = "#869B8C",
-#                           "gleich" = "#A8A8A8",
-#                             "kürzer" = "#A89BAD", 
-#                               "viel kürzer" = "#40234b"))+
-  scale_fill_gradient2(low = "#ba2b58", midpoint = 18, mid = "#f0edf1", high = "#84a07c")+
+    coord_map(projection = "mercator") +
+    scale_fill_gradientn(breaks=c(min(map_data$diffminmap),0,max(map_data$diffminmap)),
+                       colors=c('#ba2b58','#f0edf1','#84a07c')) +
+    geom_holygon(data = bundeslaendergrenzen,
+               fill = "transparent", color="white",
+               size=0.5, aes(x=long,y=lat,group=group)) +
     labs(x = NULL, 
          y = NULL, 
          title = "Kinderbetreuungszeitenvergleich", 
          #subtitle = "Vergleich der Erwerbsquoten je Geschlecht", 
          caption = "Quelle: Statistik Austria, BEV.")+
-   theme(legend.position="top",
-      legend.text = element_text(size=8),
-      axis.line=element_blank(),
-      strip.background = element_blank(),
-      axis.text.x=element_blank(),
-      axis.text.y=element_blank(),
-      axis.ticks=element_blank(),
-      axis.title.x=element_blank(),
-      axis.title.y=element_blank(),
-      panel.background=element_blank(),
-      panel.border=element_blank(),
-      panel.grid.major=element_blank(),
-      panel.grid.minor=element_blank(),
-      plot.background=element_blank())+
   guides(fill=guide_legend(nrow=6,byrow=TRUE))
 plot(p7)
 
@@ -312,6 +302,98 @@ add_save(add_theme(p7 + labs(title=NULL, caption=NULL)),'kinderbetreuungszeiten_
 #source("https://data.addendum.org/gfx/fonts/theme_addendum.R", font_import())
 ```
 
+```{r}
+
+
+p <- ggplot() +
+    # municipality polygons
+    geom_polygon(data = map_data, aes(x = long, 
+                                      y = lat, 
+                                      group = group, 
+                                      fill=gemgew16)) +
+    # municipality outline
+    geom_path(data = map_data, aes(x = long, 
+                                   y = lat, 
+                                   group = group), 
+              color = "white", size = 0.001) +
+    coord_map(projection = "mercator") +
+    scale_fill_gradientn(breaks=c(0,min((map_data %>% filter(gemgew16>0))$gemgew16), max(map_data$gemgew16)),
+                       colors=c('white','#d9d9d9','#777777')) +
+    geom_holygon(data = bundeslaendergrenzen,
+               fill = "transparent", color="white",
+               size=0.5, aes(x=long,y=lat,group=group)) +
+    labs(x = NULL, 
+         y = NULL, 
+         title = "Kinderbetreuungszeitenvergleich", 
+         #subtitle = "Vergleich der Erwerbsquoten je Geschlecht", 
+         caption = "Quelle: Statistik Austria, BEV.")+
+  guides(fill=guide_legend(nrow=6,byrow=TRUE))
+plot(p)
+add_save(add_theme(p + labs(title=NULL, caption=NULL)),'kinderbetreuungszeiten_2016')
+```
+
+```{r}
+p <- ggplot() +
+    # municipality polygons
+    geom_polygon(data = map_data, aes(x = long, 
+                                      y = lat, 
+                                      group = group, 
+                                      fill=gemgew06)) +
+    # municipality outline
+    geom_path(data = map_data, aes(x = long, 
+                                   y = lat, 
+                                   group = group), 
+              color = "white", size = 0.001) +
+    coord_map(projection = "mercator") +
+    scale_fill_gradientn(breaks=c(0,min((map_data %>% filter(gemgew06>0))$gemgew06), max(map_data$gemgew06)),
+                       colors=c('white','#d9d9d9','#777777')) +
+    geom_holygon(data = bundeslaendergrenzen,
+               fill = "transparent", color="white",
+               size=0.5, aes(x=long,y=lat,group=group)) +
+    labs(x = NULL, 
+         y = NULL, 
+         title = "Kinderbetreuungszeitenvergleich", 
+         #subtitle = "Vergleich der Erwerbsquoten je Geschlecht", 
+         caption = "Quelle: Statistik Austria, BEV.")+
+  guides(fill=guide_legend(nrow=6,byrow=TRUE))
+plot(p)
+add_save(add_theme(p + labs(title=NULL, caption=NULL)),'kinderbetreuungszeiten_2006')
+```
+
+
+
+
+```{r}
+
+map_data$gemgew16_over8h = map_data$gemgew16>480
+
+p <- ggplot() +
+    # municipality polygons
+    geom_polygon(data = map_data, aes(x = long, 
+                                      y = lat, 
+                                      group = group, 
+                                      fill=gemgew16_over8h)) +
+    # municipality outline
+    geom_path(data = map_data, aes(x = long, 
+                                   y = lat, 
+                                   group = group), 
+              color = "white", size = 0.001) +
+    coord_map(projection = "mercator") +
+    scale_fill_manual(breaks=c(TRUE, FALSE), values=c('TRUE'='#CDCC32','FALSE'='white')) +
+#    scale_fill_gradientn(breaks=c(0,min((map_data %>% filter(gemgew06>0))$gemgew06), max(map_data$gemgew06)),
+#                       colors=c('white','#d9d9d9','#777777')) +
+    geom_holygon(data = bundeslaendergrenzen,
+               fill = "transparent", color="white",
+               size=0.5, aes(x=long,y=lat,group=group)) +
+    labs(x = NULL, 
+         y = NULL, 
+         title = "Kinderbetreuungszeitenvergleich", 
+         #subtitle = "Vergleich der Erwerbsquoten je Geschlecht", 
+         caption = "Quelle: Statistik Austria, BEV.")+
+  guides(fill=guide_legend(nrow=6,byrow=TRUE))
+plot(p)
+add_save(add_theme(p + labs(title=NULL, caption=NULL)),'kinderbetreuungszeiten_2016_ueber8h')
+```
 
 
 ## Linting
