@@ -62,7 +62,6 @@ legend['category-multi'] = function(MAP) {
             if(d.length>2) {
                 console.log('too many in one place', d, data)
             }
-            d.sort();
             var k = d.join('-');
             if(!patterns[k]) {
                 patterns[k] = new L.StripePattern({
@@ -100,7 +99,7 @@ legend['threshold-or-category'] = function(MAP) {
         div.innerHTML+=`${MAP.thresholds.labels[0]}&nbsp;`;
         MAP.thresholds.colors.map((c,i) =>
             div.innerHTML+=`<span style="background: ${c}"></span>`);
-        div.innerHTML+=`&nbsp;${MAP.thresholds.labels.reverse()[0]}`;
+        div.innerHTML+=`&nbsp;${MAP.thresholds.labels.slice().reverse()[0]}`;
         return div;
     };
 

@@ -218,8 +218,8 @@ source("scripts/BorderMan.R")
 erwerb <- remove_teilungen(borderman(erwerb))
 
 erwerbsdaten <- erwerb%>%
-  mutate(vzquote = `2015_frauen_erwerbstätig_vz`/(`2015_frauen_erwerbstätig_vz`+`2015_frauen_erwerbstätig_tz`*100), 
-         erwerbstätigenquote = )
+  mutate(vzquote = `2015_frauen_erwerbstätig_vz`/(`2015_frauen_erwerbstätig_vz`+`2015_frauen_erwerbstätig_tz`*100)
+         )
 
 
 # Alle überflüssigen DFs entfernen

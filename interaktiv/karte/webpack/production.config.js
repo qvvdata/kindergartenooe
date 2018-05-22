@@ -5,14 +5,10 @@ const webpack = require('webpack');
 
 const productionConfig = {
   devtool: 'source-map', // activate source maps, see https://webpack.github.io/docs/configuration.html#devtool alternative cheap-module-eval-source-map: has proper source maps in development
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      minimize: true,
-      compressor: {
-        warnings: false // useless warnings, says Mathias :)
-      }
-    })
-  ]
+  optimization: {
+    minimize: true
+  },
+  mode: 'production',
 };
 
 module.exports = merge(base, productionConfig);
