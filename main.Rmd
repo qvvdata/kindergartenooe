@@ -305,6 +305,7 @@ p7 <- ggplot() +
       plot.background=element_blank())+
   guides(fill=guide_legend(nrow=6,byrow=TRUE))
 plot(p7)
+
 ggsave("p7.pdf", width = 15, height = 60, units = "cm")
 add_save(add_theme(p7 + labs(title=NULL, caption=NULL)),'kinderbetreuungszeiten_vergleich')
 
