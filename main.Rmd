@@ -214,7 +214,7 @@ Bei altersgemischten Einrichtungen werden die GEwichte für 3 bis 6-Jährige mit
 # 
 # print(length(which(std$diffmin >0 && std$typgmd==1)))
 # print(length(which(std$diffmin ==0 && std$typgmd==1)))
-# print(length(which(std$diffmin <0 && std$typgmd==1)))
+print(length(which(std$gemgew16 >480))
 
 countup<- std %>%
         #filter(diffmin<0) %>% 
@@ -225,9 +225,7 @@ cat(getwd())
 write.csv(countup, file ="output/datawrapper/laengerkurzer.csv")
 
 
-  
-  
-        #summarise(sum2= length(diffmin[diffmin<0]), sum4 = sum(length[diffmin >0]), na.rm=TRUE)
+
 
 ```
 
