@@ -223,4 +223,4 @@ erwerbsdaten <- erwerb%>%
 
 
 # Alle überflüssigen DFs entfernen
-rm(list= ls()[!(ls() %in% c('gemeinden','std','numerize','remove_teilungen','borderman'))])
+rm(list= ls()[!(ls() %in% c('gemeinden','std','numerize','remove_teilungen','borderman','bundeslaendergrenzen'))])
