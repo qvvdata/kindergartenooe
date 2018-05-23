@@ -100,6 +100,9 @@ library(jsonlite) # json
 library(forcats) # easier factor handling,
 library(lintr) # code linting
 library(xlsx) #Excel
+library(rgdal)
+library(rgeos)
+library(tidyverse)
 library(googlesheets) # googlesheets (replace with googlesheets4 asap)",
 file = "manifest.R")
 ```
@@ -214,7 +217,7 @@ Bei altersgemischten Einrichtungen werden die GEwichte für 3 bis 6-Jährige mit
 # 
 # print(length(which(std$diffmin >0 && std$typgmd==1)))
 # print(length(which(std$diffmin ==0 && std$typgmd==1)))
-#print(length(which(std$gemgew16 >480))
+
 
 #In wie vielen hat es sich am Land/Stadt verlängert/verkürzt?
 countup<- std %>%
@@ -250,9 +253,7 @@ table(std$gemgew16_over8h)
 
 # 
 #needs(magrittr, maptools, Cairo, ggmap, maps, rgdal, raster, viridis, readxl, googlesheets, gridExtra)
-library(rgdal)
-library(rgeos)
-needs(tidyverse, magrittr)
+
 gde_18 <- readOGR("input/geo/2018/gemeinden m bezirke 2018.geojson","OGRGeoJSON")
 
 gde_18@data$BL = substring(gde_18@data$GKZ,0,1)
@@ -370,22 +371,30 @@ add_save(add_theme(p + labs(title=NULL, caption=NULL)),'kinderbetreuungszeiten_2
 
 
 ```{r}
+gemstd16_max$gkz_neu <- as.numeric(gemstd16_max$gkz_neu)
+map_data_max <- gemstd16_max %>% left_join(map_data_fortified, by = c("gkz_neu" = "id")) 
 
-map_data$gemgew16_over8h = map_data$gemgew16>480
+map_data_max$gemgew16_over9h = map_data_max$gewichteteminuten>540
+map_data$gemgew16_over9h = map_data$gemgew16>540
+
 
 p <- ggplot() +
     # municipality polygons
-    geom_polygon(data = map_data, aes(x = long, 
+    geom_polygon(data = map_data_fortified, aes(x = long, 
+                                      y = lat, 
+                                      group = group),
+                 fill='#f8f8f8') +
+    geom_polygon(data = map_data_max, aes(x = long, 
                                       y = lat, 
                                       group = group, 
-                                      fill=gemgew16_over8h)) +
+                                      fill=gemgew16_over9h)) +
     # municipality outline
-    geom_path(data = map_data, aes(x = long, 
+    geom_path(data = map_data_max, aes(x = long, 
                                    y = lat, 
                                    group = group), 
               color = "white", size = 0.001) +
     coord_map(projection = "mercator") +
-    scale_fill_manual(breaks=c(TRUE, FALSE), values=c('TRUE'='#CDCC32','FALSE'='white')) +
+    scale_fill_manual(breaks=c(TRUE, FALSE), values=c('TRUE'='#CDCC32','FALSE'='#f8f8f8')) +
 #    scale_fill_gradientn(breaks=c(0,min((map_data %>% filter(gemgew06>0))$gemgew06), max(map_data$gemgew06)),
 #                       colors=c('white','#d9d9d9','#777777')) +
     geom_holygon(data = bundeslaendergrenzen,
@@ -398,7 +407,36 @@ p <- ggplot() +
          caption = "Quelle: Statistik Austria, BEV.")+
   guides(fill=guide_legend(nrow=6,byrow=TRUE))
 plot(p)
-add_save(add_theme(p + labs(title=NULL, caption=NULL)),'kinderbetreuungszeiten_2016_ueber8h')
+add_save(add_theme(p + labs(title=NULL, caption=NULL)),'kinderbetreuungszeiten_2016_ueber9h_max')
+
+
+
+p <- ggplot() +
+    # municipality polygons
+    geom_polygon(data = map_data, aes(x = long, 
+                                      y = lat, 
+                                      group = group, 
+                                      fill=gemgew16_over9h)) +
+    # municipality outline
+    geom_path(data = map_data, aes(x = long, 
+                                   y = lat, 
+                                   group = group), 
+              color = "white", size = 0.001) +
+    coord_map(projection = "mercator") +
+    scale_fill_manual(breaks=c(TRUE, FALSE), values=c('TRUE'='#CDCC32','FALSE'='#f8f8f8')) +
+#    scale_fill_gradientn(breaks=c(0,min((map_data %>% filter(gemgew06>0))$gemgew06), max(map_data$gemgew06)),
+#                       colors=c('white','#d9d9d9','#777777')) +
+    geom_holygon(data = bundeslaendergrenzen,
+               fill = "transparent", color="white",
+               size=0.5, aes(x=long,y=lat,group=group)) +
+    labs(x = NULL, 
+         y = NULL, 
+         title = "Kinderbetreuungszeitenvergleich", 
+         #subtitle = "Vergleich der Erwerbsquoten je Geschlecht", 
+         caption = "Quelle: Statistik Austria, BEV.")+
+  guides(fill=guide_legend(nrow=6,byrow=TRUE))
+plot(p)
+add_save(add_theme(p + labs(title=NULL, caption=NULL)),'kinderbetreuungszeiten_2016_ueber9h_gew')
 ```
 
 
