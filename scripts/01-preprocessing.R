@@ -44,6 +44,8 @@ colnames(offenestd16)[which(names(offenestd16) == "GEMNR")] <- "gkz"
 colnames(offenestd16)[which(names(offenestd16) == "GEMNR")] <- "gkz"
 offenestd16 <- select(offenestd16, -geführteFormBezeichn, -ErhalterBezeichn)
 offenestd16[is.na(offenestd16)] <- 0
+
+
 offenestd16 <- remove_teilungen(borderman(offenestd16))
 
 colnames(offenestd06) <- gsub("-", "", colnames(offenestd06))
@@ -122,6 +124,13 @@ gemeinden <- gemeinden %>%
 #Gewichtung der Öffnungsstunden
 
 
+gemstd16_max <- offenestd16 %>%
+  filter(geführteFormNr == "2" | geführteFormNr == "4") %>%
+  mutate(AnzahlderbetreutenKinder_3_6 = Alter3+Alter4+Alter5,
+         gewichteteminuten = durchschngeöffenteMinutenproBetriebstag) %>%
+  group_by(gkz_neu) %>%
+  summarize(gewichteteminuten = max(gewichteteminuten)) %>%
+  filter(gkz_neu!="0")
 
 gemstd16 <- offenestd16 %>%
           filter(geführteFormNr == "2" | geführteFormNr == "4") %>%
@@ -223,4 +232,4 @@ erwerbsdaten <- erwerb%>%
 
 
 # Alle überflüssigen DFs entfernen
-rm(list= ls()[!(ls() %in% c('gemeinden','std','numerize','remove_teilungen','borderman','bundeslaendergrenzen'))])
+rm(list= ls()[!(ls() %in% c('gemeinden','std','numerize','remove_teilungen','borderman','bundeslaendergrenzen','gemstd16_max'))])
