@@ -1,0 +1,23 @@
+﻿[steps_betreuung]
+graph: img:kinderbetreuungszeiten_2016.png
+text:
+Je ländlicher, desto kürzer haben Österreichs Kindergärten geöffnet. Je dunkler <span data-color="#db4573">Farbhervorhebung</span>
+:end
+
+
+graph: img:kinderbetreuungszeiten_2006.png
+text:
+Zweiter Beispieltext
+:end
+
+
+graph: img:kinderbetreuungszeiten_vergleich.png
+text:
+Zweiter Beispieltext
+:end
+
+
+graph: img:kinderbetreuungszeiten_2016_ueber8h.png
+text:
+Zweiter Beispieltext
+:end

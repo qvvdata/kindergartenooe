@@ -440,6 +440,11 @@ add_save(add_theme(p + labs(title=NULL, caption=NULL)),'kinderbetreuungszeiten_2
 ```
 
 
+
+```{r}
+  write.csv(std, file='interaktiv/scrolly/dist/gemeinden_kinderbetreuung.csv',fileEncoding='utf-8')
+```
+
 ## Linting
 
 The code in this RMarkdown is listed with the [lintr package](https://github.com/jimhester/lintr), which is based on the  [tidyverse style guide](http://style.tidyverse.org/). 
