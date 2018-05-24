@@ -1,23 +1,78 @@
 ﻿[steps_betreuung]
 graph: img:kinderbetreuungszeiten_2016.png
 text:
-Je ländlicher, desto kürzer haben Österreichs Kindergärten geöffnet. Je dunkler <span data-color="#db4573">Farbhervorhebung</span>
+<p>Generell sind die täglichen Öffnungszeiten im ländlichen Raum <span data-color="#a79cab">kürzer</span> als im städtischen. Das umfassendste, längste Angebot ist in Wien zu finden. In <span data-color="#ffffff">weiß</span> markierten Gemeinden gibt es keinen Kindergarten.
 :end
 
 
 graph: img:kinderbetreuungszeiten_2006.png
 text:
-Zweiter Beispieltext
+<p>So sah die Landschaft für Öffnungszeiten noch 2006 aus. Je <span data-color="#a79cab">heller</span> eine Gemeinde, desto kürzer die durchschnittliche Öffnungszeit. Je <span data-color="#40234b">dunkler</span>, desto länger.  
 :end
 
 
 graph: img:kinderbetreuungszeiten_vergleich.png
 text:
-Zweiter Beispieltext
+<p>Seither haben sich die Öffnungszeiten in sechs von zehn Gemeinden <span data-color="#745F7C'">verlängert</span>, in je zwei von zehn blieb sie <span data-color="#cecece'">konstant</span> oder <span data-color="#E8CF76'">verkürzte</span> sich.</p>
 :end
 
 
-graph: img:kinderbetreuungszeiten_2016_ueber8h.png
+
+
+graph: img:kinderbetreuungszeiten_2016.png
 text:
-Zweiter Beispieltext
+<p>Den größten <span data-color="#745F7C">Ausbau</span> gab es im ländlichen Bereich bei Gemeinden, die 2006 noch täglich sechs oder sieben Stunden geöffnet hatten. Sie haben häufig etwa zwei Stunden verlängert.</p>
+:end
+
+
+graph: img:kinderbetreuungszeiten_2016_ueber9h_max.png
+text:
+<p>Aber: Nur in einem Drittel der Gemeinden <span data-color="#745F7C">übersteigt</span> die tägliche, durchschnittliche Öffnungszeit neun Stunden.</p> 
+:end
+
+
+graph: img:kinderbetreuungszeiten_2016.png
+text:
+<p>Wer einen Vollzeitjob inklusive Wegzeiten mit Kind vereinbaren will, hat es somit in zwei von drei Gemeinden schwer.</p> 
+:end
+________________
+
+
+[steps schließtage]
+
+
+graph: img:schließtage_2016.png
+text:
+<p>Im städtischen Raum ist die Anzahl der Schließtage pro Jahr <span data-color="#a79cab">gering</span>. In Wien sind es beispielsweise im Schnitt drei pro Jahr.</p> 
+:end
+
+
+
+
+graph: img:schließtage_2016.png
+text:
+<p>Im ländlichen Raum, vor allem an der Grenze zwischen Vorarlberg und Tirol sowie der Obersteiermark haben Kindergärten <span data-color="#40234b">besonders lange</span> geschlossen.</p> 
+:end
+
+
+graph: img:schließtage_vergleich.png
+text:
+<p>Aber es gab Fortschritte: In acht von zehn Gemeinden ist die Zahl der Schließtage im Vergleich zu 2006/2007 <span data-color="#E8CF76'">gesunken.</p> 
+:end
+
+
+graph: img:schließtage_vergleich.png
+text:
+<p>Besonders in der Steiermark <span data-color="#E8CF76'">sank</span> die Zahl der Schließtage.</p>
+:end
+
+
+graph: img:schließtage_2016_ueber25t_min.png
+text:
+<p>Trotzdem <span data-color="#40234b">übersteigt</span>  die Zahl der Schließtage die Zahl der Urlaubstage von Arbeitnehmern in sechs von zehn Gemeinden.</p>
+:end
+ 
+graph: img:schließtage_2016.png
+text:
+<p>87 Gemeiden sind <span data-color="#cdcc32">grün</span> markiert, weil es keine eigene Betreuungseinrichtung im Ort gibt.</p>
 :end
