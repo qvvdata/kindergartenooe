@@ -156,7 +156,7 @@ sessionInfo()
 knitr::read_chunk("scripts/theme_addendum.R")
 source("./scripts/theme_addendum.R")
 source("./scripts/BorderMan.R")
-source("./scripts/01-preprocessing.R")
+#source("./scripts/01-preprocessing.R")
 source('./scripts/geom_holygon.R')
 cat(getwd())
 #my_function(5)
@@ -168,7 +168,8 @@ cat(getwd())
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 options(scipen=999)
-
+#needs(rgeos)
+#needs(rgdal)
 
 add_theme <- function(p) {
   p +
@@ -222,7 +223,7 @@ Bei altersgemischten Einrichtungen werden die GEwichte für 3 bis 6-Jährige mit
 #In wie vielen hat es sich am Land/Stadt verlängert/verkürzt?
 countup<- std %>%
         #filter(diffmin<0) %>% 
-        group_by(typgmdtxt, diffmintxt) %>% 
+        group_by(diffmintxt) %>% 
         count() %>%
                 summarise(sum = sum(n))
 
@@ -230,9 +231,28 @@ countup<- std %>%
 cat(getwd())
 write.csv(countup, file ="output/datawrapper/laengerkurzer.csv")
 
-std$gemgew16_over8h = std$gemgew16>480
-table(std$gemgew16_over8h)
+gemstd16_max$gewichteteminutenmax = gemstd16_max$gewichteteminuten>540
+table(gemstd16_max$gewichteteminutenmax)
+#Hier dann ausrechnen, wie hoch der Anteil der Gemeinden ist, in denen es eine Betreuung für mehr als 9 Stunden gibt. 
 
+
+# Ansehen, in welchem Öffnungszeitenbereich der größte Ausbau(/Abbau stattgefunden hat
+ranges <- ggplot(std, aes(x=gemgew06, y=diffmin, color=typgmdtxt)) + 
+    geom_point(alpha = 0.3) +
+  scale_x_continuous(breaks = c(240, 300,360,420,480))
+plot(ranges)
+
+#Wie verändert sich die Vollzeitquote für jede zusätzliche Stunde an Öffnungszeit?
+cor(std$vzquote, std$gemgew16)
+summary(lm(vzquote ~ gemgew16, std))
+#In unserem Modell zeigt sich, dass die Vollzeitbeschäftigungsquote um einen Prozentpunkt für jede Stunde längere Öffnungszeit wächst. 
+
+erwerbvzquote <- select(std, c(name,vzquote,timegemgew16, gemgew16, typgmdtxt))%>%subset(gemgew16>=200)
+write.csv(erwerbvzquote, file ="output/datawrapper/erwerbvzquote.csv", row.names = FALSE)
+
+
+#Wie viele Schließtage gibt es im Median
+mean(std$gemgewtag16, rm.na=TRUE)
 
 
 
@@ -283,15 +303,18 @@ p7 <- ggplot() +
     geom_polygon(data = map_data, aes(x = long, 
                                       y = lat, 
                                       group = group, 
-                                      fill=diffminmap)) +
+                                      fill=diffmintxt)) +
     # municipality outline
     geom_path(data = map_data, aes(x = long, 
                                    y = lat, 
                                    group = group), 
               color = "white", size = 0.001) +
     coord_map(projection = "mercator") +
-    scale_fill_gradientn(breaks=c(min(map_data$diffminmap),0,max(map_data$diffminmap)),
-                       colors=c('#ba2b58','#f0edf1','#84a07c')) +
+  scale_fill_manual(breaks=c("weniger","mehr","gleich", NA), values=c('kürzer'='#E8CF76',
+                                                                      'gleich'='#cecece', 
+                                                                      'länger'='#745F7C'), na.value="#cdcc32")+
+    #scale_fill_gradientn(breaks=c(min(map_data$diffminmap),0,max(map_data$diffminmap)),
+                     #  colors=c('#40234b','#cecece','#cdcc32')) +
     geom_holygon(data = bundeslaendergrenzen,
                fill = "transparent", color="white",
                size=0.5, aes(x=long,y=lat,group=group)) +
@@ -325,7 +348,7 @@ p <- ggplot() +
               color = "white", size = 0.001) +
     coord_map(projection = "mercator") +
     scale_fill_gradientn(breaks=c(0,min((map_data %>% filter(gemgew16>0))$gemgew16), max(map_data$gemgew16)),
-                       colors=c('white','#DCD7DE','#40234b')) +
+                       colors=c('white','#a79cab','#40234b')) +
     geom_holygon(data = bundeslaendergrenzen,
                fill = "transparent", color="white",
                size=0.5, aes(x=long,y=lat,group=group)) +
@@ -353,7 +376,7 @@ p <- ggplot() +
               color = "white", size = 0.001) +
     coord_map(projection = "mercator") +
     scale_fill_gradientn(breaks=c(0,min((map_data %>% filter(gemgew06>0))$gemgew06), max(map_data$gemgew06)),
-                       colors=c('white','#d9d9d9','#777777')) +
+                       colors=c('white','#a79cab','#40234b')) +
     geom_holygon(data = bundeslaendergrenzen,
                fill = "transparent", color="white",
                size=0.5, aes(x=long,y=lat,group=group)) +
@@ -366,9 +389,6 @@ p <- ggplot() +
 plot(p)
 add_save(add_theme(p + labs(title=NULL, caption=NULL)),'kinderbetreuungszeiten_2006')
 ```
-
-
-
 
 ```{r}
 gemstd16_max$gkz_neu <- as.numeric(gemstd16_max$gkz_neu)
@@ -394,7 +414,7 @@ p <- ggplot() +
                                    group = group), 
               color = "white", size = 0.001) +
     coord_map(projection = "mercator") +
-    scale_fill_manual(breaks=c(TRUE, FALSE), values=c('TRUE'='#CDCC32','FALSE'='#f8f8f8')) +
+    scale_fill_manual(breaks=c(TRUE, FALSE), values=c('TRUE'='#40234b','FALSE'='#f8f8f8')) +
 #    scale_fill_gradientn(breaks=c(0,min((map_data %>% filter(gemgew06>0))$gemgew06), max(map_data$gemgew06)),
 #                       colors=c('white','#d9d9d9','#777777')) +
     geom_holygon(data = bundeslaendergrenzen,
@@ -437,6 +457,143 @@ p <- ggplot() +
   guides(fill=guide_legend(nrow=6,byrow=TRUE))
 plot(p)
 add_save(add_theme(p + labs(title=NULL, caption=NULL)),'kinderbetreuungszeiten_2016_ueber9h_gew')
+```
+
+SCHLIEßTAGE
+
+```{r}
+p <- ggplot() +
+    # municipality polygons
+    geom_polygon(data = map_data, aes(x = long, 
+                                      y = lat, 
+                                      group = group, 
+                                      fill=gemgewtag16)) +
+    # municipality outline
+    geom_path(data = map_data, aes(x = long, 
+                                   y = lat, 
+                                   group = group), 
+              color = "white", size = 0.001) +
+    coord_map(projection = "mercator") +
+    scale_fill_gradientn(breaks=c(0,min((map_data %>% filter(gemgewtag16>0))$gemgewtag16), max(map_data$gemgewtag16)),
+                       colors=c('white','#a79cab','#40234b'), 
+                       na.value = "#cdcc32") +
+    geom_holygon(data = bundeslaendergrenzen,
+               fill = "transparent", color="white",
+               size=0.5, aes(x=long,y=lat,group=group)) +
+    labs(x = NULL, 
+         y = NULL, 
+         title = "Schließtage", 
+         #subtitle = "Vergleich der Erwerbsquoten je Geschlecht", 
+         caption = "Quelle: Statistik Austria")+
+  guides(fill=guide_legend(nrow=6,byrow=TRUE))
+plot(p)
+add_save(add_theme(p + labs(title=NULL, caption=NULL)),'schließtage_2016')
+
+
+#gemstd16_min_zu$gkz_neu <- as.numeric(gemstd16_min_zu$gkz_neu)
+# map_data_max <- gemstd16_max %>% left_join(map_data_fortified, by = c("gkz_neu" = "id")) 
+# 
+# map_data_max$gemgew16_over9h = map_data_max$gewichteteminuten>540
+# map_data$gemgew16_over9h = map_data$gemgew16>540
+
+# Schließtage Analyse
+countuptage<- std %>%
+        #filter(diffmin<0) %>% 
+        group_by(difftagetxt) %>% 
+        count() %>%
+        summarise(sum = sum(n))
+
+#Herausrechnen, in wie vielen Gemeinen es keine Betreeungseinrichtung gibt, die weniger Schließtage als der offizielle Urlaubsanspruch sind
+
+gemtage16_min$gkz_neu <- as.numeric(gemtage16_min$gkz_neu)
+map_data_min <- gemtage16_min %>% left_join(map_data_fortified, by = c("gkz_neu" = "id")) 
+
+map_data_min$gewichtetetage_over25 = map_data_min$gewichtetetage>25
+#map_data$gewichtetetage_over25 = map_data$gewichtetetage_over25>25
+
+hist(map_data_min$gewichtetetage, breaks=50)
+
+p <- ggplot() +
+    # municipality polygons
+    geom_polygon(data = map_data_fortified, aes(x = long, 
+                                      y = lat, 
+                                      group = group),
+                 fill='#f8f8f8') +
+    geom_polygon(data = map_data_min, aes(x = long, 
+                                      y = lat, 
+                                      group = group, 
+                                      fill=gewichtetetage_over25)) +
+    # municipality outline
+    geom_path(data = map_data_min, aes(x = long, 
+                                   y = lat, 
+                                   group = group), 
+              color = "white", size = 0.001) +
+    coord_map(projection = "mercator") +
+    scale_fill_manual(breaks=c(TRUE, FALSE), values=c('TRUE'='#40234b','FALSE'='#f8f8f8')) +
+#    scale_fill_gradientn(breaks=c(0,min((map_data %>% filter(gemgew06>0))$gemgew06), max(map_data$gemgew06)),
+#                       colors=c('white','#d9d9d9','#777777')) +
+    geom_holygon(data = bundeslaendergrenzen,
+               fill = "transparent", color="white",
+               size=0.5, aes(x=long,y=lat,group=group)) +
+    labs(x = NULL, 
+         y = NULL, 
+         title = "Schließzeiten über 25 Tage", 
+         #subtitle = "Vergleich der Erwerbsquoten je Geschlecht", 
+         caption = "Quelle: Statistik Austria, BEV.")+
+  guides(fill=guide_legend(nrow=6,byrow=TRUE))
+plot(p)
+add_save(add_theme(p + labs(title=NULL, caption=NULL)),'schließtage_2016_ueber25t_min')
+
+gemtage16_min$gewichtetetagetxt <- "test"
+gemtage16_min$gewichtetetagetxt[gemtage16_min$gewichtetetage == 25] <- "gleich"
+gemtage16_min$gewichtetetagetxt[gemtage16_min$gewichtetetage > 25]  <- "länger"
+gemtage16_min$gewichtetetagetxt[gemtage16_min$gewichtetetage < 25] <- "kürzer"
+
+print(table(gemtage16_min$gewichtetetagetxt))
+
+
+# Schließtage Veränderung visualisieren
+quantile(std$difftage, na.rm = TRUE, probs = seq(0, 1, 0.01))
+#  0%         10%         20%         30%         40%         50%         60%         70%         80%         90%        100% 
+# -216.571429  -36.000000   -9.150000    0.000000    1.853223   18.000000   36.000000   58.620360   85.300961  141.000000  326.400000 
+# 
+# map_data$difftagemap <- map_data$difftage
+# map_data$difftagemap[map_data$difftage <= -47] <- -47
+# map_data$difftagemap[map_data$difftage >= 4] <- 4
+
+#VISUALISIERUNG ZEICHNEN
+p7 <- ggplot() +
+    # municipality polygons
+    geom_polygon(data = map_data, aes(x = long, 
+                                      y = lat, 
+                                      group = group, 
+                                      fill=difftage)) +
+    # municipality outline
+    geom_path(data = map_data, aes(x = long, 
+                                   y = lat, 
+                                   group = group), 
+              color = "white", size = 0.001) +
+     coord_map(projection = "mercator") +
+    # scale_fill_manual(breaks=c("weniger","mehr","gleich", NA), values=c('weniger'='#E8CF76',
+    #                                                                   'gleich'='#cecece', 
+    #                                                                   'mehr'='#745F7C'), na.value="#cdcc32")+
+     scale_fill_gradientn(breaks=c(min(map_data$difftage),0,max(map_data$difftage)),
+                        colors=c('#E8CF76','white','#40234b'), na.value="#cdcc32") +
+    geom_holygon(data = bundeslaendergrenzen,
+               fill = "transparent", color="white",
+               size=0.5, aes(x=long,y=lat,group=group)) +
+    labs(x = NULL, 
+         y = NULL, 
+         title = "Kinderbetreuungszeitenvergleich", 
+         #subtitle = "Vergleich der Erwerbsquoten je Geschlecht", 
+         caption = "Quelle: Statistik Austria, BEV.")+
+  guides(fill=guide_legend(nrow=6,byrow=TRUE))
+plot(p7)
+
+ggsave("p7.pdf", width = 15, height = 60, units = "cm")
+add_save(add_theme(p7 + labs(title=NULL, caption=NULL)),'schließtage_vergleich')
+
+
 ```
 
 

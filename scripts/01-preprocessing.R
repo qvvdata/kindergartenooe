@@ -79,6 +79,13 @@ geschlossen16[is.na(geschlossen16)] <- 0
 geschlossen16 <- remove_teilungen(borderman(geschlossen16))
 
 
+ gemtage16_min <- geschlossen16 %>%
+  filter(geführteFormNr == "2" | geführteFormNr == "4") %>%
+  mutate(AnzahlderbetreutenKinder_3_6 = Alter3+Alter4+Alter5) %>%
+  group_by(gkz_neu) %>%
+  summarize(gewichtetetage = min(SchließtageproJahr)) %>%
+  filter(gkz_neu!="0")
+
 
 # Doku für geführte Form
 # 1 Krippe, Kleinkindbetreuungseinrichtung
@@ -131,6 +138,7 @@ gemstd16_max <- offenestd16 %>%
   group_by(gkz_neu) %>%
   summarize(gewichteteminuten = max(gewichteteminuten)) %>%
   filter(gkz_neu!="0")
+
 
 gemstd16 <- offenestd16 %>%
           filter(geführteFormNr == "2" | geführteFormNr == "4") %>%
@@ -213,6 +221,10 @@ std$diffmintxt[std$diffmin == 0] <- "gleich"
 std$diffmintxt[std$diffmin > 0]  <- "länger"
 std$diffmintxt[std$diffmin < 0] <- "kürzer"
 
+std$difftagetxt[std$difftage == 0] <- "gleich"
+std$difftagetxt[std$difftage > 0]  <- "mehr"
+std$difftagetxt[std$difftage < 0] <- "weniger"
+
 # Testing
 # ggplot(std, aes(x = diffmin)) +
 #   geom_dotplot(binwidth = 1, color) +
@@ -227,9 +239,19 @@ source("scripts/BorderMan.R")
 erwerb <- remove_teilungen(borderman(erwerb))
 
 erwerbsdaten <- erwerb%>%
-  mutate(vzquote = `2015_frauen_erwerbstätig_vz`/(`2015_frauen_erwerbstätig_vz`+`2015_frauen_erwerbstätig_tz`)*100
-         )
+  mutate(vzquote = `2015_frauen_erwerbstätig_vz`/(`2015_frauen_erwerbstätig_vz`+`2015_frauen_erwerbstätig_tz`)*100)%>%
+  numerize(c("")) %>%
+  select(c(gkz_neu, `2015_frauen_aktiv_erwerbstätig`, `2015_frauen_erwerbstätig_tz`, vzquote))
+
+std <- std %>% left_join(erwerbsdaten,by = c("gkz"="gkz_neu"))
+
+cor(std$gemgew16, std$vzquote)
+summary(lm(vzquote ~ gemgew16, std))
+
+library(chron)
+std$timegemgew16 <- substr(times((std$gemgew16%/%60 +  std$gemgew16%%60 /60)/24), 1, 5)
+
 
 
 # Alle überflüssigen DFs entfernen
-rm(list= ls()[!(ls() %in% c('gemeinden','std','numerize','remove_teilungen','borderman','bundeslaendergrenzen','gemstd16_max'))])
+rm(list= ls()[!(ls() %in% c('gemeinden','std','numerize','remove_teilungen','borderman','bundeslaendergrenzen','gemstd16_max', 'gemtage16_min'))])
