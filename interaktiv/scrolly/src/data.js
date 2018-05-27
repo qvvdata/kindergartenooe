@@ -114,7 +114,7 @@ maps['kinderbetreuung'] = {
     } else {
       var stunden = Math.floor(d.gemgew16/60);
       var minuten = Math.round(d.gemgew16-stunden*60);
-      tt += `Öffnungszeit / Tag (Ø): ${stunden}:${minuten<10?'0':''}${minuten}<br />
+      tt += `Öffnungszeit / Tag (Ø): ${stunden}:${minuten<10?'0':''}${minuten} Stunden<br />
         Vergleich zu 2006
         ${d.Einrsumcountstd16 >1 && d.Einrsumcountstd06>1?'*':''}
         : ${(d.diffmin>0?"+":'')+numfmt(d.diffmin)} Minuten<br />

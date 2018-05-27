@@ -3,12 +3,12 @@ import { graphScroll } from './graph-scroll.js';
 import * as d3 from 'd3';
 
 
-var parents = d3.selectAll('.qvv_scrollytell_wien');
+var parents = d3.selectAll('.qvv_scrollytell_kinder');
 
 import * as config from './steps.archieml';
 
 
-var img_prefix = document.location.hostname=='localhost'?'./images/':'https://data.addendum.org/gfx/2018-wien/scrolly/images/';
+var img_prefix = document.location.hostname=='localhost'?'./images/':'https://data.addendum.org/gfx/2018-kinderbetreuung/karte/images/';
 
 function img_url_transform(url) {
   return img_prefix+url.replace(/^img:/,'').trim().replace('.png', window.innerWidth<590?'_mobile.png':'.png')
@@ -69,7 +69,7 @@ parents.each(function(x)  {
     });
 
   setInterval(gs.resize, 1500);
-})
+});
 
 parents.selectAll('span[data-color]')
   .style('background', function(d) {
