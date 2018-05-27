@@ -186,8 +186,7 @@ gemzu16 <- geschlossen16 %>%
   filter(gkz_neu!="0")
 
 
-# Mit richtigem Bordermann auf die aktuellen GKZ setzen und auch fusionieren
-#source("scripts/BorderMan.R")
+
 
 
 

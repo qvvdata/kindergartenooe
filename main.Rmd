@@ -168,8 +168,6 @@ cat(getwd())
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 options(scipen=999)
-#needs(rgeos)
-#needs(rgdal)
 
 add_theme <- function(p) {
   p +
@@ -212,13 +210,6 @@ Ist frühkindliche Betreuung ausgebaut worden? Wenn ja, wo? Wie hat sich Betreuu
 Bei altersgemischten Einrichtungen werden die GEwichte für 3 bis 6-Jährige miteinbezogen, nicht für alle anderen Altersgruppen. 26209 Kinder im betreffenden Alter sind in einer altersgemischten Einrichtung. Kindergartenkinder zählt die Kindertagesheimstatistik 221.490. 
 
 ```{r}
-# print(length(which(std$diffmin <0)))
-# print(length(which(std$diffmin ==0)))
-# print(length(which(std$diffmin >0)))
-# 
-# print(length(which(std$diffmin >0 && std$typgmd==1)))
-# print(length(which(std$diffmin ==0 && std$typgmd==1)))
-
 
 #In wie vielen hat es sich am Land/Stadt verlängert/verkürzt?
 countup<- std %>%
@@ -233,6 +224,7 @@ write.csv(countup, file ="output/datawrapper/laengerkurzer.csv")
 
 gemstd16_max$gewichteteminutenmax = gemstd16_max$gewichteteminuten>540
 table(gemstd16_max$gewichteteminutenmax)
+
 #Hier dann ausrechnen, wie hoch der Anteil der Gemeinden ist, in denen es eine Betreuung für mehr als 9 Stunden gibt. 
 
 
@@ -269,9 +261,6 @@ mean(std$gemgewtag16, rm.na=TRUE)
   #      caption = "Quelle")+
   # theme_addendum()
 
-#Exportieren für Illustrator funktioniert nicht über ggsave (Schriften), sondern besser über Export des Plot-Viewers#
-
-# 
 #needs(magrittr, maptools, Cairo, ggmap, maps, rgdal, raster, viridis, readxl, googlesheets, gridExtra)
 
 gde_18 <- readOGR("input/geo/2018/gemeinden m bezirke 2018.geojson","OGRGeoJSON")
@@ -280,9 +269,6 @@ gde_18@data$BL = substring(gde_18@data$GKZ,0,1)
 
 #region <- spChFIDs(region, row.names(region))
 bundeslaendergrenzen <- gUnaryUnion(gde_18, id = gde_18@data$BL)
-
-
-
 map_data_fortified <- fortify(gde_18, region = "GKZ") %>% 
   mutate(id = as.numeric(id))
 
@@ -490,11 +476,7 @@ plot(p)
 add_save(add_theme(p + labs(title=NULL, caption=NULL)),'schließtage_2016')
 
 
-#gemstd16_min_zu$gkz_neu <- as.numeric(gemstd16_min_zu$gkz_neu)
-# map_data_max <- gemstd16_max %>% left_join(map_data_fortified, by = c("gkz_neu" = "id")) 
-# 
-# map_data_max$gemgew16_over9h = map_data_max$gewichteteminuten>540
-# map_data$gemgew16_over9h = map_data$gemgew16>540
+
 
 # Schließtage Analyse
 countuptage<- std %>%
