@@ -1,7 +1,7 @@
 ﻿[steps_betreuung]
 graph: img:kinderbetreuungszeiten_2016.png
 text:
-<p>Generell sind die täglichen Öffnungszeiten im ländlichen Raum <span data-color="#a79cab">kürzer</span> als im städtischen. Das umfassendste, längste Angebot ist in Wien zu finden. In <span data-color="#ffffff">weiß</span> markierten Gemeinden gibt es keinen Kindergarten.</p>
+<p>Generell sind die täglichen Öffnungszeiten im ländlichen Raum <span data-color="#a79cab">kürzer</span> als im städtischen. Das umfassendste, <span data-color="#40234b">längste</span> Angebot ist in Wien zu finden. In <span data-color="#ffffff">weiß</span> markierten Gemeinden gibt es keinen Kindergarten.</p>
 :end
 
 
