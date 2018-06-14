@@ -75,3 +75,45 @@ graph: img:schließtage_2016.png
 text:
 <p>87 Gemeiden sind <span data-color="#cdcc32">grün</span> markiert, weil es keine eigene Betreuungseinrichtung im Ort gibt.</p>
 :end
+
+
+[steps_betreuung_03]
+graph: img:0_3_kinderbetreuungszeiten_2016_tf.png
+text:
+<p>In den <span data-color="#40234b">violett</span> hervorgehobenen Gemeinden waren 2016/17 Kinder unter 3 Jahren in Betreuung. Das sind 962 von 2121 Gemeinden (45 %) in Österreich. In mehr als der Hälfte waren demnach keine Kleinkinder in Horten, Krippen oder altersgemischten Betreuungseinrichtungen.</p> 
+:end
+
+
+graph: img:0_3_kinderbetreuungszeiten_2016_neueeinrichtungen.png
+text:
+<p>Im Zehn-Jahres-Vergleich sind das aber 550 Gemeinden mehr, in denen Kleinkinder einen Betreuungsplatz haben. In <span data-color="#a79cab">hellerem violett </span> sind Gemeinden hervorgehoben, in denen 2006 noch keine Kinder unter 3 Jahren außerfamiliäre Betreuung hatten.</p>
+:end
+
+
+graph: img:0_3_kinderbetreuungszeiten_2006_tf.png
+text:
+<p>2006 gab waren nur in 412 Gemeinden (19 %) Kinder unter drei Jahren in einer Betreuungseinrichtung.</p>
+:end
+ 
+graph: img:0_3_kinderbetreuungszeiten_2016_0.png
+text:
+<p>Der Blick auf diese Daten kann noch weiter ins Detail gehen: Betreuung von Kleinkindern unter einem Jahr sind die Absolute Ausnahme. Im 2016 waren das etwa 2.100 Kinder in jeder zehnten Gemeinden.</p>
+:end
+
+
+graph: img:0_3_kinderbetreuungszeiten_2016_1.png
+text:
+<p>Betreuung von Kindern zwischen einem und zwei Jahren ist dagegen schon häufiger und wird in 41 Prozent Gemeinden angeboten.</p>
+:end
+
+
+graph: img:0_3_kinderbetreuungszeiten_2016_2.png
+text:
+<p>Bei Kindern im Alter zwischen zwei und drei Jahren ist das Angebot am breitesten. In 45 Prozent aller Gemeinden waren Kinder in diesem Alter in Betreuung.</p>
+:end
+
+
+graph: img:0_3_kinderbetreuungszeiten_2016_dauer.png
+text:
+<p>Die Öffnungszeiten der Stätten für Kleinstkinderbetreuung unterscheiden sich deutlich: Je urbaner, desto länger sind die Einrichtungen geöffnet. Je ländlicher, desto kürzer.</p>
+:end
