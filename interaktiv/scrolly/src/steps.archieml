@@ -1,7 +1,7 @@
 ﻿[steps_betreuung]
 graph: img:kinderbetreuungszeiten_2016.png
 text:
-<p>Generell sind die täglichen Öffnungszeiten im ländlichen Raum <span data-color="#a79cab">kürzer</span> als im städtischen. Das umfassendste, längste Angebot ist in Wien zu finden. In <span data-color="#ffffff">weiß</span> markierten Gemeinden gibt es keinen Kindergarten.</p>
+<p>Generell sind die täglichen Öffnungszeiten im ländlichen Raum <span data-color="#a79cab">kürzer</span> als im städtischen. Das <span data-color="#40234b">längste</span> Angebot aller Bundesländer ist in Wien zu finden. In <span data-color="#ffffff">weiß</span> markierten Gemeinden gibt es keinen Kindergarten.</p>
 :end
 
 
@@ -19,7 +19,7 @@ text:
 
 
 
-graph: img:kinderbetreuungszeiten_2016.png
+graph: img:kinderbetreuungszeiten_vergleich.png
 text:
 <p>Den größten <span data-color="#745F7C">Ausbau</span> gab es im ländlichen Bereich bei Gemeinden, die 2006 noch täglich sechs oder sieben Stunden geöffnet hatten. Sie haben häufig etwa zwei Stunden verlängert.</p>
 :end
@@ -27,11 +27,11 @@ text:
 
 graph: img:kinderbetreuungszeiten_2016_ueber9h_max.png
 text:
-<p>Aber: Nur in einem Drittel der Gemeinden <span data-color="#745F7C">übersteigt</span> die tägliche, durchschnittliche Öffnungszeit neun Stunden.</p> 
+<p>Aber: Nur in einem Drittel der Gemeinden hat mindestens ein Kindergarten <span data-color="#745F7C">länger</span> als  neun Stunden geöffnet.</p> 
 :end
 
 
-graph: img:kinderbetreuungszeiten_2016.png
+graph: img:kinderbetreuungszeiten_2016_ueber9h_max.png
 text:
 <p>Wer einen Vollzeitjob inklusive Wegzeiten mit Kind vereinbaren will, hat es somit in zwei von drei Gemeinden schwer.</p> 
 :end
