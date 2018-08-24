@@ -129,6 +129,63 @@ maps['kinderbetreuung'] = {
   }
 };
 
+maps['kinderbetreuung03'] = {
+  title: 'Betreuungsangebot für unter 3-Jährige in Österreich',
+  description: 'Öffnungszeiten von Einrichtungen, die Kinder von 0 bis 3 Jahre betreuen. Gibt es mehrere Einrichtungen, wird die durchschnittliche Öffnungszeit, gewichtet nach der Anzahl der Kinder, angezeigt.',
+  detail: '',
+  data: 'gemeinden_kinderbetreuung_03.csv',
+  data_key: 'gkz',
+  property_key: 'GKZ',
+  source: 'Statistik Austria',
+  is_gemeinden: true,
+  search_keys: ['name'],
+  search_title: 'Gemeindesuche',
+  topojson: 'gemeinden m bezirke 2018.topojson',
+
+  scale: 'zero-and-linear',
+
+  numfmt: (d) => {
+    var hours = Math.floor(d/60);
+    var minutes = Math.round(d-hours*60);
+    return hours+':'+(minutes<10?'0':'')+minutes+' Stunden';
+  },
+
+  value: function(d) {
+    if(d.length==0) {
+      return 0;
+    }
+    return parseFloat(d[0]['gemgew16']);
+  },
+
+
+  search: true,
+  colorschemes: ['#f2f2f2'].concat(['#DCD7DE','#40234b']),
+  legend: 0,
+
+  tooltip: function(d, p, pctfmt, numfmt) {
+    if(d.length==0) {
+      return p.name;
+    }
+    d = d[0];
+    var tt = `<strong>${d.name}</strong><br />`;
+    if(d.Einrsumcountstd16==0){
+      tt+='Keine Betreuungseinrichtung für 3- bis 6-jährige in der Gemeinde.';
+    } else {
+      tt += `Öffnungszeit / Tag (Ø): ${d.timegemgew16} Stunden${d.Einrsumcountstd16>0?'*':''}<br />
+        Einrichtungen 2016: ${numfmt(d.Einrsumcountstd16)}<br />
+        Betreute unter 3-Jährige: ${numfmt(d.sum_0_3_16)}
+      `
+      if(d.Einrsumcountstd16>1) {
+        tt += '<br />* gewichteter Wert, berücksichtigt Zahl der Kinder in den einzelnen Einrichtungen';
+      }
+      if(d.Einrsumcountstd16 == 0) {
+        tt += 'Keine Betreuungseinrichtung für unter 3-Jährige in der Gemeinde.';
+      }
+    }
+    return tt;
+  }
+};
+
 Object.keys(maps).map((x) => {maps[x].map=x});
 
 export { maps };
