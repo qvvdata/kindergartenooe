@@ -169,7 +169,7 @@ maps['kinderbetreuung03'] = {
     d = d[0];
     var tt = `<strong>${d.name}</strong><br />`;
     if(d.Einrsumcountstd16==0){
-      tt+='Keine Betreuungseinrichtung für 3- bis 6-jährige in der Gemeinde.';
+      tt+='Keine Betreuungseinrichtung für unter 3-Jährige in der Gemeinde.';
     } else {
       tt += `Öffnungszeit / Tag (Ø): ${d.timegemgew16} Stunden${d.Einrsumcountstd16>0?'*':''}<br />
         Einrichtungen 2016: ${numfmt(d.Einrsumcountstd16)}<br />
@@ -177,9 +177,6 @@ maps['kinderbetreuung03'] = {
       `
       if(d.Einrsumcountstd16>1) {
         tt += '<br />* gewichteter Wert, berücksichtigt Zahl der Kinder in den einzelnen Einrichtungen';
-      }
-      if(d.Einrsumcountstd16 == 0) {
-        tt += 'Keine Betreuungseinrichtung für unter 3-Jährige in der Gemeinde.';
       }
     }
     return tt;
